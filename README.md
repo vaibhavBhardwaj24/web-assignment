@@ -1,93 +1,35 @@
-
 # 🌟 Admin Dashboard Assignment 🌟
 
-Welcome to the **Admin Dashboard Assignment**! This project will guide you in creating a functional and user-friendly admin dashboard for a social media platform using **Next.js** and API integration.
+This is a web application that displays various blockchain metrics, including daily, monthly, and all-time data, using a React-based frontend.
 
----
+## Table of Contents
 
-## 📝 Project Overview
+1. [Introduction](#introduction)
+2. [Features](#features)
+3. [Usage](#usage)
 
-You’ll be building a responsive admin dashboard for a social media application. The dashboard will include essential features such as **user management**, **content moderation**, and **analytics** to give admins control over user data and platform activities.
+## Introduction
 
-🔗 **Admin Dashboard API**: `https://api.socialverseapp.com/admin/dashboard`
+The Blockchain Metrics Dashboard is a web application designed to provide users with a comprehensive view of blockchain-related data and metrics. This application fetches data from a backend API and displays it in a visually appealing and easy-to-understand format.
 
----
+## Features
 
-## 🌟 Key Features
+- **Daily Metrics**: Displays daily blockchain data, such as transaction volume, number of active addresses, and more.
+- **Monthly Metrics**: Provides a monthly overview of blockchain performance, including trends and comparisons.
+- **All-Time Metrics**: Presents an aggregate view of the blockchain's historical data and performance.
+- **Interactive Graphs**: Utilizes charts and graphs to visualize the blockchain data, making it easier to analyze and interpret.
+- **Responsive Design**: The application is designed to be mobile-friendly and accessible on various devices.
 
-1. 👤 User Management: Easily view & track activity, referrals, and identify active users or creators.
+## Flow Explanation
 
-2. 📝 Content Moderation: Monitor daily views, shares, comments, and post exits.
+The flow of the Blockchain Metrics Dashboard application is as follows:
 
-3. 📊 Analytics: Visualize user activity and engagement metrics daily/monthly with charts; analyze views, likes, shares, and private messages.
+1. The user navigates to the `/blockchain` route.
+2. The `page.tsx` component is rendered, fetching the blockchain data from the API.
+3. The component conditionally renders the loading spinner or the `Graphs` component, depending on the data fetching state.
+4. The `Graphs` component utilizes the Recharts library to render the various data visualizations.
+5. The application's styling and responsive design are handled by Tailwind CSS.
 
-5. 📈 Data Visualization: Responsive charts (Chart.js/Recharts) provide insights into user engagement and content performance.
+## Usage
 
----
-
-## 🛠️ Tech Stack
-
-- **Frontend**: Next.js
-- **Styling**: Tailwind CSS or Styled Components
-- **Analytics Visualization**: Chart.js or Recharts
-- **Data Fetching**: SWR or React Query for API requests
-
----
-
-## ✅ Requirements
-
-1. **📱 Responsive Design**: Ensure that the dashboard is mobile-friendly.
-2. **🌐 API Integration**: Use the provided API to fetch and display user and post data.
-3. **📄 Documentation**: Write clean, well-documented code, and include a detailed **README** with setup instructions and an overview of the project structure.
-
----
-
-## 🚀 Getting Started
-
-1. **Clone or Fork the repository** and install the necessary dependencies:
-   ```bash
-   git clone https://github.com/Tim-Alpha/web-assignment.git
-   ```
-   ```bash
-   cd web-assignment
-   ```
-   ```bash
-   npm install
-   ```
-2. **Set up environment variables** by creating an `.env.local` file.
-3. **Run the project**:
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 📩 Submission Process
-
-1. **GitHub Repository**:
-   - Push your code to a GitHub repository with appropriate permissions.
-   - Ensure that the repository has **read permissions** for review.
-
-2. **🎥 Video Explanation**:
-   - Record a video walk through of your project, including:
-     - A demo of the UI and key features
-     - An explanation of your code structure and logic
-     - A brief introduction of yourself and the project
-   - **Tip**: Make it engaging and informative!
-   - Share the video link via a platform like Google Drive or Internshala.
-   - Your face must be visible in the entire video explanation.
-
-3. **Submit the Following**:
-   - **GitHub Link**: Your repository link
-   - **Video Link**: Your video walk through link
-
----
-
-## 🏆 Evaluation Criteria
-
-1. **✨ UI/UX**: Aesthetics, ease of use, and responsiveness
-2. **🧑‍💻 Code Quality**: Readable, well-structured, and documented code
-3. **🌐 API Integration**: Proper use of the provided API
-4. **📅 Completion**: Submission of both the GitHub and video links, with all features implemented
-
-Good luck, and happy coding! 🚀
+Once the application is running, you can interact with the Blockchain Metrics Dashboard by navigating through the different sections and viewing the data visualizations. The dashboard will display the daily, monthly, and all-time blockchain metrics.
