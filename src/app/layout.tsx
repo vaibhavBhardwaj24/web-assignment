@@ -29,7 +29,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}
       >
         <Sidebar />
-        <div className="pl-14 h-full w-full"> {children}</div>
+        <div className="md:pl-14 md:pt-0 pt-14 h-full w-full "> {children}</div>
       </body>
     </html>
   );

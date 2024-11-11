@@ -1,19 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Graphs from "../component/graphs";
-
-interface Data {
+interface data {
   daily: Chart;
   monthly: Chart;
-  allTime: [];
+  allTime: { [key: string]: number };
 }
-
 interface Chart {
-  chartData: [];
+  chartData: DataPoint[];
+  [key: string]: number | DataPoint[];
 }
-
+interface DataPoint {
+  timestamp: string;
+  count: number;
+}
 const BlockchainPage: React.FC = () => {
-  const [data, setData] = useState<Data>();
+  const [data, setData] = useState<data>();
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
@@ -28,8 +30,9 @@ const BlockchainPage: React.FC = () => {
   }, []);
 
   return (
-    <div className=" h-screen overflow-scroll flex flex-col bg-gray-200">
+    <div className=" h-screen overflow-scroll flex flex-col bg-color800 text-white">
       <h1 className="text-6xl font-bold p-6">Blockchain Metrics</h1>
+      <h2 className="text-color500 pl-6">Content Analytics Overview</h2>
       {loading ? (
         <div className="h-full w-full flex justify-center items-center backdrop-blur-lg">
           <div className="flex-col gap-4 w-full flex items-center justify-center">

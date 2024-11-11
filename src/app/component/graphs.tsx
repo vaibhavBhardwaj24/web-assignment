@@ -1,25 +1,28 @@
 "use client";
-import { BarChart3, LineChartIcon } from "lucide-react";
+import { BarChart3, LineChartIcon, Triangle } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 interface data {
-  daily: chart;
-  monthly: chart;
-  allTime: [];
+  daily: Chart;
+  monthly: Chart;
+  allTime: { [key: string]: number };
 }
-interface chart {
-  chartData: [];
+
+interface Chart {
+  chartData: DataPoint[];
+  [key: string]: number | DataPoint[];
 }
+
 interface DataPoint {
   timestamp: string;
   count: number;
@@ -60,21 +63,29 @@ const Graphs = ({ data }: { data: data }) => {
           {Object.entries(data!.allTime).map(([key, value], index) => (
             <div
               key={index}
-              className="font-semibold md:flex gap-3 bg-white rounded-lg p-4 hover:-translate-y-2 duration-200 cursor-pointer"
+              className="font-semibold md:flex gap-3  bg-color1 rounded-lg p-4 hover:-translate-y-2 duration-200 cursor-pointer border-[2px] border-color700"
             >
-              <p className="text-nowrap"> {splitCamelCase(key)}</p>
-              <Count targetValue={value} />
+              <p className="text-wrap text-color500"> {splitCamelCase(key)}</p>
+              <Count
+                className="md:text-3xl text-2xl"
+                percentage={0}
+                targetValue={
+                  typeof value === "number"
+                    ? value
+                    : parseInt(String(value), 10)
+                }
+              />
             </div>
           ))}
         </div>
       </div>
       <div className="h-1/2 flex gap-2 md:flex-row flex-col w-full">
-        <div className="h-fit md:w-1/2 p-2 bg-white rounded-lg md:m-4">
+        <div className="h-fit md:w-1/2 p-2 bg-color1 rounded-lg md:m-4">
           <div className="w-full flex justify-between">
             <h1 className="font-bold text-3xl">Daily Data</h1>
-            <div className="bg-gray-200 flex gap-2 p-1 rounded-xl">
+            <div className="bg-color700 flex gap-2 p-1 text-color200 rounded-xl">
               <button
-                style={{ backgroundColor: dailyToggle ? "white" : "" }}
+                style={{ backgroundColor: dailyToggle ? "#6c72ff" : "" }}
                 className="rounded-lg p-1 duration-300"
                 onClick={() => {
                   setDailyToggle(true);
@@ -83,7 +94,7 @@ const Graphs = ({ data }: { data: data }) => {
                 <LineChartIcon />
               </button>
               <button
-                style={{ backgroundColor: dailyToggle ? "" : "white" }}
+                style={{ backgroundColor: dailyToggle ? "" : "#6c72ff" }}
                 className="rounded-lg p-1 duration-300"
                 onClick={() => {
                   setDailyToggle(false);
@@ -96,49 +107,58 @@ const Graphs = ({ data }: { data: data }) => {
           <div className="h-80">
             {dailyToggle ? (
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart
+                <AreaChart
                   data={dailyData}
                   margin={{
-                    top: 20,
-                    right: 30,
-                    left: 20,
-                    bottom: 20,
+                    top: 10,
+                    right: 10,
+                    left: 0,
+                    bottom: 0,
                   }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <defs>
+                    <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#E57373" stopOpacity={0.6} />
+                      <stop
+                        offset="95%"
+                        stopColor="#E57373"
+                        stopOpacity={0.2}
+                      />
+                    </linearGradient>
+                  </defs>
                   <XAxis
                     dataKey="timestamp"
                     tickFormatter={dailyFormat}
                     textAnchor="end"
-                    height={70}
+                    height={40}
                   />
-                  <YAxis />
+                  <YAxis width={40} />
                   <Tooltip
                     labelFormatter={(value) => dailyFormat(value)}
                     formatter={(value) => [`${value} counts`, "Value"]}
                   />
-                  <Line
+                  <Area
                     type="monotone"
                     dataKey="count"
                     stroke="#E57373"
                     strokeWidth={2}
-                    dot={{ r: 4 }}
-                    activeDot={{ r: 8 }}
+                    fill="url(#colorCount)"
+                    // dot={{ r: 1 }}
+                    // activeDot={{ r: 8 }}
                   />
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={dailyData}
                   margin={{
-                    top: 20,
-                    right: 30,
-                    left: 20,
-                    bottom: 70,
+                    top: 10,
+                    right: 10,
+                    left: 0,
+                    bottom: 0,
                   }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     hide
                     dataKey="timestamp"
@@ -148,22 +168,24 @@ const Graphs = ({ data }: { data: data }) => {
                     height={70}
                     interval={0}
                   />
-                  <YAxis />
+                  <YAxis width={40} />
                   <Tooltip
                     labelFormatter={(value) => dailyFormat(value)}
                     formatter={(value: number) => [`${value} counts`, "Value"]}
                   />
                   <Bar
+                    legendType="line"
                     dataKey="count"
                     fill="#E57373"
                     radius={[4, 4, 0, 0]}
                     maxBarSize={50}
                   ></Bar>
+                  <Legend />
                 </BarChart>
               </ResponsiveContainer>
             )}
           </div>
-          <div className="grid gap-4 md:grid-cols-2 p-2 text-xl md:text-2xl">
+          <div className="grid gap-4 md:grid-cols-2 p-2 text-base md:text-2xl">
             {Object.entries(data!.daily).map(([key, value], index) => {
               if (key === "chartData") {
                 return null;
@@ -171,21 +193,66 @@ const Graphs = ({ data }: { data: data }) => {
               return (
                 <div
                   key={index}
-                  className="font-semibold flex gap-3 bg-white rounded-lg "
+                  className="font-semibold items-center flex gap-3 rounded-lg md:justify-start justify-between "
                 >
-                  <p className="text-nowrap"> {splitCamelCase(key)}</p>
-                  <Count targetValue={value} />
+                  <div className="flex gap-2  items-center">
+                    {" "}
+                    <p className="text-nowrap text-base text-color500">
+                      {splitCamelCase(key)}
+                    </p>
+                    <Count
+                      targetValue={value as number}
+                      percentage={Number(
+                        (((value as number) -
+                          (data.monthly[key] as number) / 31) /
+                          ((data.monthly[key] as number) / 31)) *
+                          100
+                      )}
+                    />
+                  </div>
+                  <p
+                    className="text-xs flex gap-1 opacity-75"
+                    style={{
+                      color:
+                        Number(
+                          (((value as number) -
+                            (data.monthly[key] as number) / 31) /
+                            ((data.monthly[key] as number) / 31)) *
+                            100
+                        ) > 0
+                          ? "#4CAF50"
+                          : "#E57373",
+                    }}
+                  >
+                    {Number(
+                      (((value as number) -
+                        (data.monthly[key] as number) / 31) /
+                        ((data.monthly[key] as number) / 31)) *
+                        100
+                    ) < 0 ? (
+                      <Triangle className="rotate-180 size-4 " fill="#FF6B6B" />
+                    ) : (
+                      <Triangle className=" size-4 " fill="#4CAF50" />
+                    )}
+                    {Number(
+                      (((value as number) -
+                        (data.monthly[key] as number) / 31) /
+                        ((data.monthly[key] as number) / 31)) *
+                        100
+                    ).toFixed(0)}
+                    % last month
+                  </p>
                 </div>
               );
             })}
           </div>
         </div>
-        <div className="h-fit md:w-1/2 p-2 bg-white rounded-lg md:m-4">
+        <div className="h-fit md:w-1/2 p-2 bg-color1 rounded-lg md:m-4">
           <div className="w-full flex justify-between">
             <h1 className="font-bold text-3xl">Monthly Data</h1>
-            <div className="bg-gray-200 flex gap-2 p-1 rounded-xl">
+            <div className="bg-color700 flex gap-2 p-1 text-color200 rounded-xl">
               <button
-                style={{ backgroundColor: monthlyToggle ? "white" : "" }}
+                style={{ backgroundColor: monthlyToggle ? "#6c72ff" : "" }}
                 className="rounded-lg p-1 duration-300"
                 onClick={() => {
                   setMonthlyToggle(true);
@@ -194,7 +261,7 @@ const Graphs = ({ data }: { data: data }) => {
                 <LineChartIcon />
               </button>
               <button
-                style={{ backgroundColor: monthlyToggle ? "" : "white" }}
+                style={{ backgroundColor: monthlyToggle ? "" : "#6c72ff" }}
                 className="rounded-lg p-1 duration-300"
                 onClick={() => {
                   setMonthlyToggle(false);
@@ -207,49 +274,59 @@ const Graphs = ({ data }: { data: data }) => {
           <div className="h-80">
             {monthlyToggle ? (
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart
+                <AreaChart
                   data={monthlyData}
                   margin={{
-                    top: 20,
-                    right: 30,
-                    left: 20,
-                    bottom: 20,
+                    top: 10,
+                    right: 10,
+                    left: 0,
+                    bottom: 0,
                   }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <defs>
+                    <linearGradient id="monthColor" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.6} />
+                      <stop
+                        offset="95%"
+                        stopColor="#2563eb"
+                        stopOpacity={0.2}
+                      />
+                    </linearGradient>
+                  </defs>
                   <XAxis
                     dataKey="timestamp"
                     tickFormatter={monthlyFormat}
                     textAnchor="end"
-                    height={70}
+                    height={40}
                   />
-                  <YAxis />
+                  <YAxis width={40} />
                   <Tooltip
                     labelFormatter={(value) => monthlyFormat(value)}
                     formatter={(value) => [`${value} counts`, "Value"]}
                   />
-                  <Line
+                  <Area
                     type="monotone"
                     dataKey="count"
                     stroke="#2563eb"
                     strokeWidth={2}
-                    dot={{ r: 4 }}
-                    activeDot={{ r: 8 }}
+                    fill="url(#monthColor)"
+                    // dot={false} {/* Removes the dot markers */}
+                    // activeDot={{ r: 8 }}
                   />
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={monthlyData}
                   margin={{
-                    top: 20,
-                    right: 30,
-                    left: 20,
-                    bottom: 70,
+                    top: 10,
+                    right: 10,
+                    left: 0,
+                    bottom: 0,
                   }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  {/* <CartesianGrid strokeDasharray="3 3" /> */}
                   <XAxis
                     hide
                     dataKey="timestamp"
@@ -259,12 +336,14 @@ const Graphs = ({ data }: { data: data }) => {
                     height={70}
                     interval={0}
                   />
-                  <YAxis />
+                  <YAxis width={40} />
                   <Tooltip
                     labelFormatter={(value) => monthlyFormat(value)}
                     formatter={(value: number) => [`${value} counts`, "Value"]}
                   />
+                  <Legend />
                   <Bar
+                    legendType="line"
                     dataKey="count"
                     fill="#2563eb"
                     radius={[4, 4, 0, 0]}
@@ -275,7 +354,7 @@ const Graphs = ({ data }: { data: data }) => {
             )}
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 p-2 text-xl md:text-2xl">
+          <div className="grid gap-4 md:grid-cols-2 p-2  md:text-2xl ">
             {Object.entries(data!.monthly).map(([key, value], index) => {
               if (key === "chartData") {
                 return null;
@@ -283,10 +362,51 @@ const Graphs = ({ data }: { data: data }) => {
               return (
                 <div
                   key={index}
-                  className="font-semibold flex gap-3 bg-white rounded-lg "
+                  className="font-semibold flex gap-3 bg-color1 rounded-lg  items-center md:justify-start justify-between"
                 >
-                  <p className="text-nowrap"> {splitCamelCase(key)}</p>
-                  <Count targetValue={value} />
+                  <div className="flex gap-2 items-center">
+                    <p className="text-nowrap text-base text-color500">
+                      {splitCamelCase(key)}
+                    </p>
+
+                    <Count
+                      targetValue={value as number}
+                      percentage={Number(
+                        (((value as number) - data.allTime[key] / 12) /
+                          (data.allTime[key] / 12)) *
+                          100
+                      )}
+                    />
+                  </div>
+                  <p
+                    className="text-xs flex gap-1 opacity-75"
+                    style={{
+                      color:
+                        Number(
+                          (((value as number) - data.allTime[key] / 12) /
+                            (data.allTime[key] / 12)) *
+                            100
+                        ) > 0
+                          ? "#4CAF50"
+                          : "#E57373",
+                    }}
+                  >
+                    {Number(
+                      (((value as number) - data.allTime[key] / 12) /
+                        (data.allTime[key] / 12)) *
+                        100
+                    ) < 0 ? (
+                      <Triangle className="rotate-180 size-4 " fill="#FF6B6B" />
+                    ) : (
+                      <Triangle className="size-4" fill="#4CAF50" />
+                    )}
+                    {Number(
+                      (((value as number) - data.allTime[key] / 12) /
+                        (data.allTime[key] / 12)) *
+                        100
+                    ).toFixed(0)}
+                    % last year
+                  </p>
                 </div>
               );
             })}
@@ -319,12 +439,15 @@ interface CountUpProps {
   duration?: number;
   className?: string;
   formatNumber?: boolean;
+  percentage: number;
 }
 
 const Count: React.FC<CountUpProps> = ({
+  className = "",
   targetValue = 1000,
   duration = 1000,
   formatNumber = true,
+  percentage = 0,
 }) => {
   const [count, setCount] = useState<number>(0);
 
@@ -369,9 +492,13 @@ const Count: React.FC<CountUpProps> = ({
 
   return (
     <div
-      className="text-3 xl font-bold text-black"
+      className={`text-3xl font-bold text-white ${className}`}
       role="timer"
       aria-live="polite"
+      style={{
+        color:
+          percentage === 0 ? "white" : percentage > 0 ? "green" : "#FF6B6B",
+      }}
     >
       {formatWithCommas(count)}
     </div>

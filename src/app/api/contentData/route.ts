@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const maxRetries = 3; // Set the maximum retry attempts
-  const retryDelay = 1000; // Delay between retries in milliseconds
+  const maxRetries = 3;
+  const retryDelay = 1000;
   let attempt = 0;
   let data;
 

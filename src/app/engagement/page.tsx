@@ -2,12 +2,18 @@
 import React, { useEffect, useState } from "react";
 import Graphs from "../component/graphs";
 interface data {
-  daily: chart;
-  monthly: chart;
-  allTime: [];
+  daily: Chart;
+  monthly: Chart;
+  allTime: { [key: string]: number };
 }
-interface chart {
-  chartData: [];
+interface Chart {
+  chartData: DataPoint[];
+  [key: string]: number | DataPoint[];
+}
+
+interface DataPoint {
+  timestamp: string;
+  count: number;
 }
 const Engagementpage: React.FC = () => {
   const [data, setData] = useState<data>();
@@ -24,8 +30,9 @@ const Engagementpage: React.FC = () => {
   }, []);
 
   return (
-    <div className=" h-screen overflow-scroll flex-col flex bg-gray-200">
-      <h1 className="text-6xl font-bold p-6">Engagement Metrics</h1>
+    <div className=" h-screen overflow-scroll flex-col flex bg-color800 text-white">
+      <h1 className="text-6xl font-bold p-6">Engagement Data</h1>
+      <h2 className="text-color500 pl-6">Engagement Data Insights</h2>
       {loading ? (
         <div className="h-full w-full flex justify-center items-center backdrop-blur-lg">
           <div className="flex-col gap-4 w-full flex items-center justify-center">
