@@ -15,7 +15,7 @@ import {
 interface data {
   daily: Chart;
   monthly: Chart;
-  allTime: { [key: string]: number };
+  allTime: { [key: string]: number | string };
 }
 
 interface Chart {
@@ -66,15 +66,19 @@ const Graphs = ({ data }: { data: data }) => {
               className="font-semibold md:flex gap-3  bg-color1 rounded-lg p-4 hover:-translate-y-2 duration-200 cursor-pointer border-[2px] border-color700"
             >
               <p className="text-wrap text-color500"> {splitCamelCase(key)}</p>
-              <Count
-                className="md:text-3xl text-2xl"
-                percentage={0}
-                targetValue={
-                  typeof value === "number"
-                    ? value
-                    : parseInt(String(value), 10)
-                }
-              />
+              {typeof value == "number" ? (
+                <Count
+                  className="md:text-3xl text-2xl"
+                  percentage={0}
+                  targetValue={
+                    typeof value === "number"
+                      ? value
+                      : parseInt(String(value), 10)
+                  }
+                />
+              ) : (
+                <p className=" flex gap-2">{value}</p>
+              )}
             </div>
           ))}
         </div>
@@ -356,7 +360,7 @@ const Graphs = ({ data }: { data: data }) => {
 
           <div className="grid gap-4 md:grid-cols-2 p-2  md:text-2xl ">
             {Object.entries(data!.monthly).map(([key, value], index) => {
-              if (key === "chartData") {
+              if (key === "chartData" || typeof data.allTime[key] == "string") {
                 return null;
               }
               return (
